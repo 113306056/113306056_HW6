@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>1A2B Game</title>
+</head>
+<body>
+	<h1>113306056_HW6_1A2B</h1>
+	<input id="userInput" type="text" maxlength="4" placeholder="請輸入4個不重複的數字">
+	<button onclick="submitGuess()">提交</button>
+	<p>遊戲紀錄：</p>
+	<p id="attempts"></p>
+
+	<div class="results" id="results"></div>
+
+	<script >
+		var secretNumber = generateSecretNumber();
+		var attempts = 0;
+
+	function generateSecretNumber() {
+  	var digits = Array.from({ length: 10 }, (_, i) => i.toString());
+  	var number = [];
+  	while (number.length < 4) {
+    var randomIndex = Math.floor(Math.random() * digits.length);
+    number.push(digits.splice(randomIndex, 1)[0]);
+  	}
+  	return number.join('');
+	}
+
+	function validateInput(input) {
+  	if (input.length !== 4) {
+  	  alert('請輸入4位數字！');
+    return false;
+  	}
+  	if (!/^\d+$/.test(input)) {
+    alert('請輸入有效的數字！');
+    return false;
+  }
+  if (new Set(input).size !== input.length) {
+    alert('數字不能重複！');
+    return false;
+  }
+  return true;
+}
+
+	function calculateResult(guess, secret) {
+  	var a = 0, b = 0;
+ 	 for (let i = 0; i < guess.length; i++) {
+    if (guess[i] === secret[i]) {
+      a++;
+    } else if (secret.includes(guess[i])) {
+      b++;
+    }
+  }
+  return `${a}A${b}B`;
+}
+
+	function submitGuess() {
+  	var inputField = document.getElementById('userInput');
+  	var userGuess = inputField.value;
+
+  if (!validateInput(userGuess)) {
+    inputField.value = '';
+    return;
+  }
+
+  attempts++;
+  var result = calculateResult(userGuess, secretNumber);
+  
+  var resultsDiv = document.getElementById('results');
+  resultsDiv.innerHTML += `<p>第 ${attempts} 次: ${userGuess} -> ${result}</p>`;
+
+
+  if (result === '4A0B') {
+    alert(`恭喜！你猜對了！總共作答 ${attempts} 次！`);
+    inputField.disabled = true;
+    document.querySelector('button').disabled = true;
+  }
+
+  inputField.value = '';
+}
+
+	</script>
+</body>
+</html>
